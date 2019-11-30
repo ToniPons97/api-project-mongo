@@ -1,27 +1,35 @@
+#!/usr/local/bin/python3
 from bottle import route, run, get, post, request
 import random
 from bson.json_util import dumps
 from mongo_connect import db, coll
 import json
+import pandas
 
-@get("/data")
+@get("/data/")
 def index():
     return {dumps(coll.find())}
 
 
-@get("/userNames")
+@get("/userNames/")
 def getUserNames():
     all_names = coll.find({}, {"idUser" : 1, "userName" : 1})
-    for _ in all_names:
-        return dumps(all_names)
+    return (dumps(all_names))
+
+@get("/text/")
+def getAllChats():
+    all_chats = coll.find({}, {"text" : 1})
+    for _ in all_chats:
+        return (dumps(all_chats))
 
 
 @get("/userNames/<name>")
 def getUserName(name):
-    all_names = coll.find({}, {"userNamer" : 1})
-    for i in all_names:
-        if i == name:
-            return dumps(i)
+    names = coll.find({}, {"idUser" : 1, "userName" : 1})
+    person = [p for p in names if p['userName'] == name]
+    return dumps(person)
+
+
 
 
 #@post('/add')
