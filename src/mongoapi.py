@@ -11,8 +11,8 @@ def index():
 
 @get("/user_names")
 def demo2():
-    names = coll.find("userName")
-    return dumps(names)
+    names = [i["userName"] for i in coll.find()]
+    return dumps(list(set(names)))
 
 #@post('/add')
 #def add():
