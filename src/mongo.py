@@ -1,23 +1,29 @@
-#!/usr/bin/python3
-
 from pymongo import MongoClient
-import getpass
-import json
-import os
+import mongo_connect
 
-#Get Password
-password = getpass.getpass("Insert your AtlasMongoDB admin_1019 password: ")
-connection = "mongodb+srv://toninopons:{}@cluster0-ys9hj.mongodb.net/test?retryWrites=true&w=majority".format(password)
+class CollConection:
 
-#Connect to DB
-client = MongoClient(connection)
-def connectCollection(database, collection):
-    db = client[database]
-    coll = db[collection]
-    return db, coll
+    def __init__(self,dbName,collection):
+        
+        self.client = MongoClient(mongo_connect.connection)
+        self.db = self.client[dbName]
+        self.collection=self.db[collection]
 
-db, coll = connectCollection('api-project-mongo','Chats')
+    def addDocument(self,document):
+        
+        a=self.collection.insert_one(document)
+        print("Inserted", a.inserted_id)
+        return a.inserted_id
 
-with open('/Users/antoniopons/Documents/Projects/api-project-mongo/input/chats.json') as f:
-    chats_json = json.load(f)
-coll.insert_many(chats_json)
+    def addManyDocuments(self,documents):
+        
+        a=self.collection.insert_many(documents)
+        print("Inserted", a.inserted_id)
+        return a.inserted_id
+    
+    def addChiste(self, autor, chiste):
+        
+        document={'autor':autor,
+                'chiste':chiste}
+        return self.addDocument(document)
+        
