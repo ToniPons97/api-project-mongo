@@ -1,19 +1,20 @@
 #!/usr/bin/python3
-from dotenv import load_dotenv
-import mongo
+from pymongo import MongoClient
+import getpass
 import json
 import os
-import dns
 
-load_dotenv()
 
-#Get Password
-password = os.getenv("PASSWORD")
-connection = f"mongodb+srv://toninopons:{password}@cluster0-ys9hj.mongodb.net/test?retryWrites=true&w=majority"
-#Connect to DB
-#client = MongoClient(connection)
-connection_return = mongo.CollConection("api-project-mongo", "Chats")
+client = MongoClient(os.getenv("URL"))
+
+
+def connectCollection(database, collection):
+    db = client[database]
+    coll = db[collection]
+    return db, coll
+
+db, coll = connectCollection('api-project-mongo','chats')
 
 with open('../input/chat.json') as f:
     chats_json = json.load(f)
-mongo.CollConection.addManyDocuments(chats_json)
+coll.insert_many(chats_json)
