@@ -18,6 +18,6 @@ def connectCollection(database, collection):
 
 db, coll = connectCollection('api-project-mongo','Chats')
 
-with open('~/Documents/Projects/api-project-mongo/input/chats.json') as f:
+with open('/Users/antoniopons/Documents/Projects/api-project-mongo/input/chats.json') as f:
     chats_json = json.load(f)
 coll.insert_many(chats_json)
