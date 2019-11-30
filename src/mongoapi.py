@@ -10,10 +10,19 @@ def index():
 
 
 @get("/userNames")
-def demo2():
-    names = coll.find({}, {'idUser': 1, 'userName':1})
-    for _ in names:
-        return dumps(names)
+def getUserNames():
+    all_names = coll.find({}, {"idUser" : 1, "userName" : 1})
+    for _ in all_names:
+        return dumps(all_names)
+
+
+@get("/userNames/<name>")
+def getUserName(name):
+    all_names = coll.find({}, {"userNamer" : 1})
+    for i in all_names:
+        if i == name:
+            return dumps(i)
+
 
 #@post('/add')
 #def add():
