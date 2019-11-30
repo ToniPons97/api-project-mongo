@@ -4,15 +4,16 @@ from bson.json_util import dumps
 from mongo_connect import db, coll
 import json
 
-@get("/")
+@get("/data")
 def index():
-    return dumps(coll.find())
+    return {dumps(coll.find())}
 
 
-@get("/user_names")
+@get("/userNames")
 def demo2():
-    names = [i["userName"] for i in coll.find()]
-    return dumps(list(set(names)))
+    names = coll.find({}, {'idUser': 1, 'userName':1})
+    for _ in names:
+        return dumps(names)
 
 #@post('/add')
 #def add():
