@@ -2,9 +2,10 @@
 from bottle import route, run, get, post, request
 import random
 from bson.json_util import dumps
-from mongo_connect import db, coll
+from mongo_connect import connectCollection
 import json
-import pandas
+
+db, coll = connectCollection("api-project-mongo", "Chats")
 
 @get("/data/")
 def index():
@@ -13,21 +14,26 @@ def index():
 
 @get("/userNames/")
 def getUserNames():
-    all_names = coll.find({}, {"idUser" : 1, "userName" : 1})
+    all_names = coll.find({}, {"idUser" : 1, "userName" : 1, "idChat" : 1})
     return (dumps(all_names))
+
 
 @get("/text/")
 def getAllChats():
-    all_chats = coll.find({}, {"text" : 1})
-    return (dumps(all_chats))
+    return dumps(coll.find({}, {"text" : 1}))
 
 
 @get("/userNames/<name>/")
 def getUserName(name):
-    names = coll.find({}, {"idUser" : 1, "userName" : 1, "text" : 1})
-    person = [p for p in names if p['userName'] == name]
-    return dumps(person)
+    return dumps(coll.find({"userName" : name}))
+    
 
+
+@get("/text/limit=<number>/")
+def getTextsWithLimit(number):
+    number = int(number)
+    texts = coll.find({}, {"idUser" : 1, "userName" : 1, "text" : 1, "idChat" : 1}).limit(number)
+    return dumps(texts)
 
 
 

@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 from pymongo import MongoClient
-import getpass
 import json
 import os
 
@@ -13,8 +12,9 @@ def connectCollection(database, collection):
     coll = db[collection]
     return db, coll
 
-db, coll = connectCollection('api-project-mongo','chats')
+#db, coll = connectCollection("api-project-mongo", "Chats")
 
-with open('../input/chat.json') as f:
-    chats_json = json.load(f)
-coll.insert_many(chats_json)
+#with open("../input/chat.json") as f:
+#    chats_json = json.load(f)
+#coll.insert_many(chats_json)
+#coll.drop()
