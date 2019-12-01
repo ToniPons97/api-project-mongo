@@ -48,7 +48,7 @@ def getTextsWithLimit(number):
     texts = coll.find({}, {"idUser" : 1, "userName" : 1, "text" : 1, "idChat" : 1}).limit(number)
     return dumps(texts)
 
-@get("/chat/<number>")
+@get("/chat/<number>/")
 def getSpecificChat(number):
     number = int(number)
     return dumps(coll.find({"idChat" : number}))
