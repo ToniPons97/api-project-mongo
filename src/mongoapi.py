@@ -18,24 +18,40 @@ def getUserNames():
     return (dumps(all_names))
 
 
-@get("/text/")
+@get("/chats/")
 def getAllChats():
+    """
+        get all chats
+    """
     return dumps(coll.find({}, {"text" : 1}))
 
 
 @get("/userNames/<name>/")
 def getUserName(name):
+    """
+        get all chats and messages for a particular user
+    """
     return dumps(coll.find({"userName" : name}))
-    
 
+  
+@get("/userNames/<name>/<number>/")
+def getUserNameLimit(name, number):
+    """
+        get number of chats and messages for a particular user
+    """
+    number = int(number)
+    return dumps(coll.find({"userName" : name}).limit(number))
 
-@get("/text/limit=<number>/")
+@get("/chats/<number>/")
 def getTextsWithLimit(number):
     number = int(number)
     texts = coll.find({}, {"idUser" : 1, "userName" : 1, "text" : 1, "idChat" : 1}).limit(number)
     return dumps(texts)
 
-
+@get("/chat/<number>")
+def getSpecificChat(number):
+    number = int(number)
+    return dumps(coll.find({"idChat" : number}))
 
 
 
