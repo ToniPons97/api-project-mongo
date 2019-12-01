@@ -19,15 +19,16 @@ def getUserNames():
 @get("/text/")
 def getAllChats():
     all_chats = coll.find({}, {"text" : 1})
-    for _ in all_chats:
-        return (dumps(all_chats))
+    return (dumps(all_chats))
 
 
-@get("/userNames/<name>")
+@get("/userNames/<name>/")
 def getUserName(name):
-    names = coll.find({}, {"idUser" : 1, "userName" : 1})
+    names = coll.find({}, {"idUser" : 1, "userName" : 1, "text" : 1})
     person = [p for p in names if p['userName'] == name]
     return dumps(person)
+
+
 
 
 
