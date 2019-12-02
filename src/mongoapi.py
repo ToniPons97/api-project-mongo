@@ -1,9 +1,11 @@
 #!/usr/local/bin/python3
-from bottle import route, run, get, post, request
 import random
+import json
+import nltk
+from bottle import route, run, get, post, request
 from bson.json_util import dumps
 from mongo_connect import connectCollection
-import json
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 db, coll = connectCollection("api-project-mongo", "Chats")
 
@@ -34,16 +36,15 @@ def getUserName(name):
     return dumps(coll.find({"userName" : name}))
 
   
-@get("/userNames/<name>/<number>")
+@get("/userNames/<name>/limit=<number>")
 def getUserNameLimit(name, number):
-    """
-        get number of chats and messages for a particular user
-    """
+    #get number of chats and messages for a particular user
+
     number = int(number)
     return dumps(coll.find({"userName" : name}).limit(number))
 
 
-@get("/chats/<number>")
+@get("/chats/limit=<number>")
 def getTextsWithLimit(number):
     number = int(number)
     texts = coll.find({}, {"idUser" : 1, "userName" : 1, "text" : 1, "idChat" : 1}).limit(number)
@@ -54,6 +55,53 @@ def getTextsWithLimit(number):
 def getSpecificChat(number):
     number = int(number)
     return dumps(coll.find({"idChat" : number}))
+
+
+@get("/overall_sentiment")
+def sentiments():
+    #get sentiment analysis of every message of every chat
+    sentiment = dict()
+    text = ""
+    sid = SentimentIntensityAnalyzer()
+
+    for e in coll.find():
+        try:
+            text += e["text"] + " "
+            sentiment['analysis'] = sid.polarity_scores(text)
+        except:
+            pass
+    return sentiment
+
+
+@get("/sentiment/chat=<number>")
+def sentimentSpecificChat(number):
+    number = int(number)
+    sentiment = dict()
+    text = ""
+    sid = SentimentIntensityAnalyzer()
+    
+    for e in coll.find({"idChat" : number}):
+        try:
+            text += e["text"] + " "
+            sentiment["analysis"] = sid.polarity_scores(text)
+        except:
+            pass
+    return sentiment
+
+
+@get("/sentiment/<user>")
+def sentimentSpecificUser(user):
+    sentiment = dict()
+    text = ""
+    sid = SentimentIntensityAnalyzer()
+
+    for e in coll.find({"userName" : user}):
+        try:
+            text += e["text"] + " "
+            sentiment["analysis"] = sid.polarity_scores(text)
+        except:
+            pass
+    return sentiment
 
 
 @post('/user/create')
@@ -90,8 +138,6 @@ def createChat():
         info.append(user)
     coll.insert_many(info)
     return f"Chat_id: {c}"
-
-#@post("")
 
 
 run(host='127.0.0.1', port=8080)
