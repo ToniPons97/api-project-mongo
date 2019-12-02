@@ -10,12 +10,16 @@ db, coll = connectCollection("api-project-mongo", "Chats")
 
 @get("/sentiment/")
 def getSentiment():
-    text = [t["text"] for t in coll.find({}, {"text" : 1})]
-    return dumps(text)
+    text = ""
+    for e in dumps(coll.find()):
+        text += + e["text"] + " "   
+
+    print(text)
+    return dumps(coll.find())
 
 run(host="127.0.0.1", port=8080)
 
 
-sentence = "FUCK YOU"
-sid = SentimentIntensityAnalyzer()
-print(sid.polarity_scores(sentence))
+#sentence = "FUCK YOU"
+#sid = SentimentIntensityAnalyzer()
+#print(sid.polarity_scores(sentence))
