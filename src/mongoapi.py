@@ -42,6 +42,14 @@ def getUserNameLimit(name, number):
     number = int(number)
     return dumps(coll.find({"userName" : name}).limit(number))
 
+@get("/userNames/<name>/idUser/")
+def getIDforUser(name):
+    """
+        get id for a specific user.
+    """
+    return dumps(coll.find({"userName" : name}, {"idUser" : 1}))
+
+
 @get("/chats/<number>/")
 def getTextsWithLimit(number):
     number = int(number)
@@ -52,7 +60,6 @@ def getTextsWithLimit(number):
 def getSpecificChat(number):
     number = int(number)
     return dumps(coll.find({"idChat" : number}))
-
 
 
 @post('/user/create/')
