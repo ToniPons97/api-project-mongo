@@ -55,13 +55,22 @@ def getSpecificChat(number):
 
 
 
-#@post('/add')
-#def add():
- #   print(dict(request.forms))
-  #  autor = request.forms.get("autor")
-   # chiste = request.forms.get("chiste")  
-    #return {
-     #   "inserted_doc": str(coll.addChiste(autor,chiste))}
+@post('/user/create/')
+def newUser():
+    name = str(request.forms.get("userName"))
+    new_id = max(coll.distinct("idUser")) + 1
+    names = coll.distinct("userName")
+    if name in names:
+        return "name already in database"
+    else:
+        new_user = {
+            "idUser": new_id,
+            "userName": name
+        }
+        coll.insert_one(new_user)
+        print(f"{name} added to collection with id {new_id}")
+        return f"user_id {new_id}"
+
 
 
 run(host='127.0.0.1', port=8080)

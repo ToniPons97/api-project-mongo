@@ -17,4 +17,3 @@ def connectCollection(database, collection):
 #with open("../input/chat.json") as f:
 #    chats_json = json.load(f)
 #coll.insert_many(chats_json)
-#coll.drop()
