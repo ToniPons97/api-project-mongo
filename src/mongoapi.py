@@ -73,6 +73,25 @@ def newUser():
         return f"user_id {new_id}"
 
 
+@post("/chat/create")
+def createChat():
+    c = max(coll.distinct("idChat"))+1
+    users_list = list(request.forms.getall("idUser"))
+    print(users_list)
+    info = []
+    for u in users_list:
+        user = {}
+        user_info = (coll.find({"idUser":int(u)},{"userName":1}))
+        print(user_info)
+        user["idUser"] = u
+        user['userName'] = user_info[0]["userName"]
+        user['idChat'] = c
+        print(user)
+        info.append(user)
+    coll.insert_many(info)
+    return f"Chat_id: {c}"
+
+
 
 run(host='127.0.0.1', port=8080)
 
