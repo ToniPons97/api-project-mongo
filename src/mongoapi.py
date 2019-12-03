@@ -22,30 +22,33 @@ def getUserNames():
 
 @get("/chats")
 def getAllChats():
-    """
-        get all chats
-    """
+    #get all chats
+
     return dumps(coll.find({}, {"text" : 1}))
 
 
 @get("/userNames/<name>")
 def getUserName(name):
     """
-        get all chats and messages for a particular user
+    get all chats and messages for a particular user
     """
     return dumps(coll.find({"userName" : name}))
 
   
 @get("/userNames/<name>/limit=<number>")
 def getUserNameLimit(name, number):
-    #get number of chats and messages for a particular user
-
+    """
+    get number of chats and messages for a particular user
+    """
     number = int(number)
     return dumps(coll.find({"userName" : name}).limit(number))
 
 
 @get("/chats/limit=<number>")
 def getTextsWithLimit(number):
+    """
+    limit results of chats get request
+    """
     number = int(number)
     texts = coll.find({}, {"idUser" : 1, "userName" : 1, "text" : 1, "idChat" : 1}).limit(number)
     return dumps(texts)
@@ -53,13 +56,18 @@ def getTextsWithLimit(number):
 
 @get("/chat/<number>")
 def getSpecificChat(number):
+    """
+    get specific chat entering idChat
+    """
     number = int(number)
     return dumps(coll.find({"idChat" : number}))
 
 
 @get("/overall_sentiment")
 def sentiments():
-    #get sentiment analysis of every message of every chat
+    """
+    get sentiment analysis of all messages
+    """
     sentiment = dict()
     text = ""
     sid = SentimentIntensityAnalyzer()
@@ -75,6 +83,9 @@ def sentiments():
 
 @get("/sentiment/chat=<number>")
 def sentimentSpecificChat(number):
+    """
+    get sentiment analysis for a specific chat
+    """
     number = int(number)
     sentiment = dict()
     text = ""
@@ -91,6 +102,9 @@ def sentimentSpecificChat(number):
 
 @get("/sentiment/<user>")
 def sentimentSpecificUser(user):
+    """
+    get sentiment analysis for specific user
+    """
     sentiment = dict()
     text = ""
     sid = SentimentIntensityAnalyzer()
@@ -106,6 +120,9 @@ def sentimentSpecificUser(user):
 
 @post('/user/create')
 def newUser():
+    """
+    add new user to the database. This new user won't have any messages or chats
+    """
     name = str(request.forms.get("userName"))
     new_id = max(coll.distinct("idUser")) + 1
     names = coll.distinct("userName")
@@ -123,6 +140,9 @@ def newUser():
 
 @post("/chat/create")
 def createChat():
+    """
+    create a chat with exsting users
+    """
     c = max(coll.distinct("idChat"))+1
     users_list = list(request.forms.getall("idUser"))
     print(users_list)
